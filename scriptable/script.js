@@ -1,38 +1,20 @@
+const user = "ivan"
+const url = "https://omori.tolkunov.dev/img?user=" + user
 const refreshInterval = 1
 const basepaintUrl = "https://basepaint-ponder-production.up.railway.app/"
 
 const widget = await createWidget()
-if (!config.runsInWidget) { await widget.presentMedium() }
+if (!config.runsInWidget) { WebView.loadURL(url) }
 Script.setWidget(widget)
 Script.complete()
 
 async function createWidget() {
-
+    let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=" + user).loadImage()
     let widget = new ListWidget()
-    let selection = await getLatestCanvas()
-    widget.backgroundImage = selection.image
-    widget.addSpacer()
+    widget.backgroundImage = img
 
     let interval = 1000 * 60 * refreshInterval
     widget.refreshAfterDate = new Date(Date.now() + interval)
-    
-    widget.url = selection.url
 
     return widget
-
-}
-
-async function getLatestCanvas() {
-    try {
-        let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=ivan").loadImage()
-        return {
-            image: img, 
-            title: "",
-            url: "https://omori.tolkunov.dev/img?user=ivan"
-        }
-    } catch (e) {
-        console.error(e)
-        return null
-    }
-
 }
