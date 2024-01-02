@@ -1,5 +1,6 @@
 import os
 from urllib.parse import urlencode
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.core.files.storage import default_storage
@@ -12,6 +13,9 @@ from omori import settings
 
 def index(request):
     user = request.GET.get('user')
+    if not user:
+        return HttpResponse("User not found", status=404)
+    
     folder = Path(settings.MEDIA_ROOT) / user
     files = sorted(os.listdir(folder), reverse=True)
 
