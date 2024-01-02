@@ -24,12 +24,12 @@ async function createWidget() {
 
 async function getLatestCanvas() {
     try {
-            let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=alina").loadImage()
-            return {
-                image: img, 
-                title: "",
-                url: "https://omori.tolkunov.dev/img?user=alina"
-            }
+        let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=ivan").loadImage()
+        return {
+            image: img, 
+            title: "",
+            url: "https://omori.tolkunov.dev/img?user=ivan"
+        }
     } catch (e) {
         console.error(e)
         return null

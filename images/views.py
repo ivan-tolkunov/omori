@@ -1,6 +1,5 @@
 import os
 from urllib.parse import urlencode
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.core.files.storage import default_storage
@@ -17,6 +16,7 @@ def index(request):
     files = sorted(os.listdir(folder), reverse=True)
 
     return render(request, "images/index.html", {
+        "files": files,
         "latest_file": user + '/' + files[0] if files else None,
         "user": user
     })
