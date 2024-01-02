@@ -19,10 +19,11 @@ from django.urls import include, path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 
-from omori import settings
+from omori import settings, views
 
 urlpatterns = [
     path("img/", include("images.urls")),
     path("admin/", admin.site.urls),
+    path('', views.index)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
