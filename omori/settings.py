@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-d$ee_f*qh7n%pfw^+)03c$5$6lj*r--3j85wn#g#s837g!8k=t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['omori.tolkunov.dev']
+
+CSRF_TRUSTED_ORIGINS = ['https://omori.tolkunov.dev']
 
 
 # Application definition
@@ -130,6 +132,7 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'images/static'),]
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'staticfiles'),

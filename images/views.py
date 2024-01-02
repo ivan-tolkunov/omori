@@ -1,24 +1,47 @@
 import os
+from urllib.parse import urlencode
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from pyuploadcare import Uploadcare, File
+from django.urls import reverse
 from django.core.files.storage import default_storage
 from pathlib import Path
+from datetime import datetime
+from django.templatetags.static import static
+
 
 from omori import settings
 
 def index(request):
-    return render(request, "images/index.html")
+    user = request.GET.get('user')
+    folder = Path(settings.MEDIA_ROOT) / user
+    files = sorted(os.listdir(folder), reverse=True)
+
+    return render(request, "images/index.html", {
+        "latest_file": user + '/' + files[0] if files else None,
+        "user": user
+    })
+
+def upload_img(request):
+    file = request.FILES.get('image')
+    receiver = request.POST.get('receiver')
+    user = request.POST.get('user')
+    now = datetime.now()
+    timestamp = now.strftime('%Y%m%d_%H_%M_%S')
+    _, file_extension = os.path.splitext(file.name)
+    file_name = Path(settings.MEDIA_ROOT) / receiver / (timestamp + file_extension)
+    default_storage.save(file_name, file)
+
+    base_url = reverse('index')
+    query_string = urlencode({'user': user})
+    url = '{}?{}'.format(base_url, query_string)
+
+    return redirect(url)
 
 def get_img(request):
-    file = request.FILES.get('image')
-    file_name = Path(settings.MEDIA_ROOT) / Path(default_storage.save(file.name, file))
-    upload(file_name)
-    default_storage.delete(file_name)
-    return redirect('index')
-
-def upload(file_name):
-    uploadcare = Uploadcare(public_key='f46fb1fa74d411e2ca9a', secret_key='2e28fcf62e0258d170de')
-    with open(file_name, 'rb') as file_object:
-        uc_file: File = uploadcare.upload(file_object, store=True)
-        print(uc_file.info)
+    user = request.GET.get('user')
+    folder = Path(settings.MEDIA_ROOT) / user
+    files = sorted(os.listdir(folder), reverse=True)
+    if len(files) < 1:
+        image_url = static('img/love-you.gif')
+        return redirect(image_url)
+    return redirect(settings.MEDIA_URL + user + '/' + files[0])

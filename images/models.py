@@ -6,4 +6,6 @@ from pyuploadcare.dj.forms import FileWidget
 
 
 class Image(models.Model):
-    photo = ImageField(blank=True, manual_crop="")
+    name = models.CharField(max_length=255)
+    time = models.DateTimeField(auto_now_add=True)
+    
