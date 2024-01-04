@@ -29,6 +29,8 @@ def index(request):
 def upload_img(request):
     try:
         file = request.FILES.get("image")
+        if not file:
+            raise ValueError("No file uploaded")
         receiver = request.POST.get("receiver")
         user = request.POST.get("user")
         now = datetime.now()
@@ -37,7 +39,13 @@ def upload_img(request):
         if file_extension.lower() not in [".png", ".jpeg", ".heic", ".jpg", ".gif"]:
             raise ValueError("Unsupported file extension")
         file_name = Path(settings.MEDIA_ROOT) / receiver / (timestamp + file_extension)
+        file_amount_pre = file_amount(receiver)
         default_storage.save(file_name, file)
+        if file_amount_pre >= file_amount(receiver):
+            raise ValueError("Upload failed")
+        messages.add_message(request, messages.INFO, "Upload successful")
+    except ValueError as e:
+        messages.add_message(request, messages.ERROR, str(e))
     except:
         messages.add_message(request, messages.ERROR, "Upload failed")
     finally:
@@ -54,3 +62,6 @@ def get_img(request):
         image_url = static("img/love-you.gif")
         return redirect(image_url)
     return redirect(settings.MEDIA_URL + user + "/" + files[0])
+
+def file_amount(user):
+    return len(os.listdir( Path(settings.MEDIA_ROOT) / user))

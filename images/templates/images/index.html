@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <title>Image Uploader</title>
@@ -6,81 +7,16 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            background-color: #32323b;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            gap: 100px;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-
-        .image-uploader {
-            margin-top: 100px;
-            border: 2px dashed #8E8E93;
-            padding: 20px;
-            text-align: center;
-            background-color: #191717;
-            color: #000000;
-            border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-            width: 300px;
-            transition: box-shadow 0.3s ease-in-out;
-        }
-
-        .image-uploader:hover {
-            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
-        }
-
-        .upload-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .upload-icon {
-            width: 50px;
-            height: 50px;
-            color: #007AFF;
-        }
-
-        .upload-text {
-            margin-top: 10px;
-            color: #8E8E93;
-        }
-
-        .file-input {
-            display: none;
-        }
-        .image-content {
-            flex: 1;
-            max-width: 100vw;
-            max-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .image-content img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
 </head>
 <body>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="toast bg-dark text-white position-fixed" style="top: 0; left: 0; z-index: 9999;" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <div class="toast bg-dark text-white position-fixed" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
                 <div class="toast-header">
-                    <strong class="mr-auto">Looks not so good 🗿</strong>
+                    <strong class="mr-auto {% if message.level == 20 %} done">  Done ✅ {% elif message.level == 40 %} error" > Looks not so good 🗿 {% endif %}</strong>
                     <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -110,11 +46,5 @@
             <input type="file" id="file-input" class="file-input" name="image" onchange="uploader.submit()">
         </form>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $('.toast').toast('show');
-        });
-    </script>
 </body>
 </html>

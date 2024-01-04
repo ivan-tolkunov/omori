@@ -1,0 +1,86 @@
+body {
+    background-color: #32323b;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    gap: 50px;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.done {
+    color: green;
+}
+
+.error {
+    color: red;
+}
+
+.image-uploader {
+    border: 2px dashed #8E8E93;
+    padding: 20px;
+    text-align: center;
+    background-color: #191717;
+    color: #000000;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.image-uploader:hover {
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+.toast {
+    top: 0;
+    max-width: 100%;
+    width: 100%;
+    max-height: 100%;
+    font-size: 24px;
+}
+
+.toast-header {
+    height: 50px;
+    display: block;
+    text-align: center;
+}
+
+.toast-body {
+    height: 60px;
+    text-align: center;
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.upload-icon {
+    width: 50px;
+    height: 50px;
+    color: #007AFF;
+}
+
+.upload-text {
+    color: #8E8E93;
+}
+
+.file-input {
+    display: none;
+}
+.image-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.image-content img {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+}
