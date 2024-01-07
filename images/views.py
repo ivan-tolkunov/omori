@@ -8,6 +8,8 @@ from pathlib import Path
 from datetime import datetime
 from django.templatetags.static import static
 from django.contrib import messages
+from django.db import IntegrityError
+from .models import Image
 
 
 from omori import settings
@@ -63,5 +65,21 @@ def get_img(request):
         return redirect(image_url)
     return redirect(settings.MEDIA_URL + user + "/" + files[0])
 
+def add_reaction(request):
+    try:
+        user = request.POST.get("user")
+        reaction = request.POST.get("reaction")
+        receiver = request.POST.get("receiver")
+        new_reaction = Image(emodji=reaction, receiver=receiver)
+        new_reaction.save()
+        messages.add_message(request, messages.INFO, "Reaction added")
+    except IntegrityError:
+        messages.add_message(request, messages.ERROR, "Can't add reaction")
+    finally:
+        base_url = reverse("index")
+        query_string = urlencode({"user": user})
+        url = "{}?{}".format(base_url, query_string)
+        return redirect(url)
+    
 def file_amount(user):
     return len(os.listdir( Path(settings.MEDIA_ROOT) / user))

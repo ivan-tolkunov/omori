@@ -29,7 +29,9 @@
     {% endif %}
     <div class="image-content">
         {% if latest_file %}
-                <img src="/media/{{ latest_file }}" />
+            <button id="prev-button">Previous</button>
+            <img id="image" src="/media/{{ latest_file }}" />
+            <button id="next-button">Next</button>
         {% endif %}
     </div>
     <div id="image-uploader" class="image-uploader">
@@ -44,6 +46,14 @@
                 <span class="upload-text">Drag and drop images here or click to upload</span>
             </label>
             <input type="file" id="file-input" class="file-input" name="image" onchange="uploader.submit()">
+        </form>
+    </div>
+    <div>
+        <form method="post" action="logout">
+            {% csrf_token %}
+            <input type="hidden" name="receiver" {% if user == "alina" %} value="ivan" {% else %} value="alina" {% endif %}>
+            <input type="hidden" name="user" value="{{ user }}">
+            <input type="submit" value="Logout">
         </form>
     </div>
 </body>

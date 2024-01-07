@@ -18,3 +18,14 @@ async function createWidget() {
 
     return widget
 }
+
+
+// let n = new Notification()
+
+// n.title = "My title"
+
+// n.subtitle = "my Subtitle"
+
+// n.body = " A large amount of text for the body"
+
+// n.schedule()

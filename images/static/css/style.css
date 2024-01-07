@@ -78,6 +78,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 915px;
 }
 .image-content img {
     max-width: 70%;
