@@ -1,6 +1,6 @@
 import os
 from urllib.parse import urlencode
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.core.files.storage import default_storage
@@ -10,6 +10,7 @@ from django.templatetags.static import static
 from django.contrib import messages
 from django.db import IntegrityError
 from .models import Image
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from omori import settings
@@ -81,16 +82,19 @@ def add_reaction(request):
         url = "{}?{}".format(base_url, query_string)
         return redirect(url)
     
+
 def get_reactions(request):
-    receiver = request.GET.get("receiver")
     user = request.GET.get("user")
-    reactions = Image.objects.filter(receiver=receiver)
-    for i in reactions:
-        print(i.emodji)
-    base_url = reverse("index")
-    query_string = urlencode({"user": user})
-    url = "{}?{}".format(base_url, query_string)
-    return redirect(url)
+    if not user:
+        return HttpResponseBadRequest("User parameter is required")
+    try:
+        reactions = Image.objects.filter(receiver=user).values('emodji')
+        response_body = [reaction['emodji'] for reaction in reactions]
+        Image.objects.filter(receiver=user).delete()
+    except ObjectDoesNotExist:
+        return HttpResponseBadRequest("No reactions found for the given user")
+    finally:
+        return JsonResponse(response_body, safe=False)
     
 def file_amount(user):
     return len(os.listdir( Path(settings.MEDIA_ROOT) / user))

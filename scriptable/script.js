@@ -1,7 +1,6 @@
 const user = "ivan"
 const url = "https://omori.tolkunov.dev/img?user=" + user
 const refreshInterval = 1
-const basepaintUrl = "https://basepaint-ponder-production.up.railway.app/"
 
 const widget = await createWidget()
 if (!config.runsInWidget) { WebView.loadURL(url) }
@@ -10,8 +9,10 @@ Script.complete()
 
 async function createWidget() {
     let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=" + user).loadImage()
+    let notifications = await new Request("https://omori.tolkunov.dev/img/get-reactions?user=" + user).loadJSON()
     let widget = new ListWidget()
     widget.backgroundImage = img
+    await createNotification(notifications)
 
     let interval = 1000 * 60 * refreshInterval
     widget.refreshAfterDate = new Date(Date.now() + interval)
@@ -19,13 +20,13 @@ async function createWidget() {
     return widget
 }
 
-
-// let n = new Notification()
-
-// n.title = "My title"
-
-// n.subtitle = "my Subtitle"
-
-// n.body = " A large amount of text for the body"
-
-// n.schedule()
+async function createNotification(notifications) {
+    if (notifications.length > 0) {
+        for (let notification of notifications) {
+            let n = new Notification()
+            n.title = "Wow!"
+            n.body = notification.reaction
+            n.schedule()
+        }
+    }
+}
