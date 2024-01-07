@@ -81,5 +81,16 @@ def add_reaction(request):
         url = "{}?{}".format(base_url, query_string)
         return redirect(url)
     
+def get_reactions(request):
+    receiver = request.GET.get("receiver")
+    user = request.GET.get("user")
+    reactions = Image.objects.filter(receiver=receiver)
+    for i in reactions:
+        print(i.emodji)
+    base_url = reverse("index")
+    query_string = urlencode({"user": user})
+    url = "{}?{}".format(base_url, query_string)
+    return redirect(url)
+    
 def file_amount(user):
     return len(os.listdir( Path(settings.MEDIA_ROOT) / user))
