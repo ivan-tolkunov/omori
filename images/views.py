@@ -9,9 +9,10 @@ from datetime import datetime
 from django.templatetags.static import static
 from django.contrib import messages
 from .models import Image
-
+from django.views.decorators.cache import never_cache
 from omori import settings
 
+@never_cache
 def index(request):
     user = request.GET.get("user")
     if not user:
@@ -26,6 +27,7 @@ def index(request):
         "user": user
     })
 
+@never_cache
 def upload_img(request):
     try:
         file = request.FILES.get("image")
@@ -66,6 +68,7 @@ def get_img(request):
         return redirect(image_url)
     return redirect(settings.MEDIA_URL + user + "/" + files[0])
 
+@never_cache
 def add_reaction(request):
     try:
         user = request.POST.get("user")
