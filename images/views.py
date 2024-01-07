@@ -74,7 +74,7 @@ def add_reaction(request):
         new_reaction = Image(emodji=reaction, receiver=receiver)
         new_reaction.save()
         messages.add_message(request, messages.INFO, "Reaction added")
-    except IntegrityError:
+    except:
         messages.add_message(request, messages.ERROR, "Can't add reaction")
     finally:
         base_url = reverse("index")
@@ -91,7 +91,7 @@ def get_reactions(request):
         reactions = Image.objects.filter(receiver=user).values('emodji')
         response_body = [reaction['emodji'] for reaction in reactions]
         Image.objects.filter(receiver=user).delete()
-    except ObjectDoesNotExist:
+    except:
         return HttpResponseBadRequest("No reactions found for the given user")
     finally:
         return JsonResponse(response_body, safe=False)
