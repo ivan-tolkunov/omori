@@ -33,7 +33,6 @@
             <div>
                 <form method="post" action="react">
                     {% csrf_token %}
-                    <input type="hidden" name="receiver" {% if user == "alina" %} value="ivan" {% else %} value="alina" {% endif %}>
                     <input type="hidden" name="user" value="{{ user }}">
                     <button class="reaction_button" type="submit" name="reaction" value="heart">🥰</button>
                     <button type="submit" class="reaction_button" name="reaction" value="poop">💩</button>
@@ -46,7 +45,6 @@
     <div id="image-uploader" class="image-uploader">
         <form id="uploader" method="post" action="upload" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" name="receiver" {% if user == "alina" %} value="ivan" {% else %} value="alina" {% endif %}>
             <input type="hidden" name="user" value="{{ user }}">
             <label for="file-input" class="upload-label">
                 <svg class="upload-icon" height="50" viewBox="0 0 1792 1792" width="50" xmlns="http://www.w3.org/2000/svg" fill="#8E8E93">
@@ -54,7 +52,7 @@
                 </svg>
                 <span class="upload-text">Drag and drop images here or click to upload</span>
             </label>
-            <input type="file" id="file-input" class="file-input" name="image" onchange="uploader.submit()">
+            <input type="file" id="file-input" class="file-input" name="image" accept="image/*" onchange="uploader.submit()">
         </form>
     </div>
 </body>

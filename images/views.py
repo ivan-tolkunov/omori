@@ -8,10 +8,7 @@ from pathlib import Path
 from datetime import datetime
 from django.templatetags.static import static
 from django.contrib import messages
-from django.db import IntegrityError
 from .models import Image
-from django.core.exceptions import ObjectDoesNotExist
-
 
 from omori import settings
 
@@ -33,14 +30,15 @@ def upload_img(request):
     try:
         file = request.FILES.get("image")
         if not file:
+            print("No file uploaded")
             raise ValueError("No file uploaded")
-        receiver = request.POST.get("receiver")
         user = request.POST.get("user")
+        receiver = "ivan" if user == "alina" else "alina"
         now = datetime.now()
         timestamp = now.strftime("%Y%m%d_%H_%M_%S")
         _, file_extension = os.path.splitext(file.name)
         if file_extension.lower() not in [".png", ".jpeg", ".heic", ".jpg", ".gif"]:
-            raise ValueError("Unsupported file extension")
+            raise ValueError(f"Unsupported file extension: {file_extension}")
         file_name = Path(settings.MEDIA_ROOT) / receiver / (timestamp + file_extension)
         file_amount_pre = file_amount(receiver)
         default_storage.save(file_name, file)
@@ -48,14 +46,16 @@ def upload_img(request):
             raise ValueError("Upload failed")
         messages.add_message(request, messages.INFO, "Upload successful")
     except ValueError as e:
+        print(e)
         messages.add_message(request, messages.ERROR, str(e))
-    except:
-        messages.add_message(request, messages.ERROR, "Upload failed")
-    finally:
-        base_url = reverse("index")
-        query_string = urlencode({"user": user})
-        url = "{}?{}".format(base_url, query_string)
-        return redirect(url)
+    except Exception as e:
+        print(e)
+        messages.add_message(request, messages.ERROR, "Upload failed:" + str(e))
+    
+    base_url = reverse("index")
+    query_string = urlencode({"user": user})
+    url = "{}?{}".format(base_url, query_string)
+    return redirect(url)
 
 def get_img(request):
     user = request.GET.get("user")
@@ -70,17 +70,18 @@ def add_reaction(request):
     try:
         user = request.POST.get("user")
         reaction = request.POST.get("reaction")
-        receiver = request.POST.get("receiver")
+        receiver = "ivan" if user == "alina" else "alina"
         new_reaction = Image(emodji=reaction, receiver=receiver)
         new_reaction.save()
         messages.add_message(request, messages.INFO, "Reaction added")
-    except:
-        messages.add_message(request, messages.ERROR, "Can't add reaction")
-    finally:
-        base_url = reverse("index")
-        query_string = urlencode({"user": user})
-        url = "{}?{}".format(base_url, query_string)
-        return redirect(url)
+    except Exception as e:
+        print(e)
+        messages.add_message(request, messages.ERROR, "Can't add reaction: " + str(e))
+
+    base_url = reverse("index")
+    query_string = urlencode({"user": user})
+    url = "{}?{}".format(base_url, query_string)
+    return redirect(url)
     
 
 def get_reactions(request):
@@ -91,10 +92,10 @@ def get_reactions(request):
         reactions = Image.objects.filter(receiver=user).values('emodji')
         response_body = [reaction['emodji'] for reaction in reactions]
         Image.objects.filter(receiver=user).delete()
-    except:
-        return HttpResponseBadRequest("No reactions found for the given user")
-    finally:
-        return JsonResponse(response_body, safe=False)
+    except Exception as e:
+        return HttpResponseBadRequest("No reactions found for the given user: " + str(e))
+    
+    return JsonResponse(response_body, safe=False)
     
 def file_amount(user):
     return len(os.listdir( Path(settings.MEDIA_ROOT) / user))

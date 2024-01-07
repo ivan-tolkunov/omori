@@ -7,12 +7,6 @@ if (!config.runsInWidget) { WebView.loadURL(url) }
 Script.setWidget(widget)
 Script.complete()
 
-const reactions = new Map();
-reactions.set("heart", "🥰")
-reactions.set("poop", "💩")
-reactions.set("stone", "🗿")
-reactions.set("lol", "😂")
-
 async function createWidget() {
     let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=" + user).loadImage()
     let notifications = await new Request("https://omori.tolkunov.dev/img/get-reactions?user=" + user).loadJSON()
@@ -27,12 +21,16 @@ async function createWidget() {
 }
 
 async function createNotification(notifications) {
-    if (notifications.length > 0) {
-        for (let notification of notifications) {
-            let n = new Notification()
-            n.title = "Wow!"
-            n.body = reactions.get(notification)
-            n.schedule()
-        }
+    const reactions = {
+        "heart": "🥰",
+        "poop": "💩",
+        "stone": "🗿",
+        "lol": "😂",
+    }
+    for (let notification of notifications) {
+        let n = new Notification()
+        n.title = "Wow!"
+        n.body = reactions[notification]
+        await n.schedule()
     }
 }
