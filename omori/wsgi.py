@@ -25,15 +25,14 @@ bucket_name = "omori-photos"
 folder_names = ["alina" , "ivan"]
 s3 = boto3.client('s3')
 paginator = s3.get_paginator('list_objects_v2')
+local_directory = Path(settings.MEDIA_ROOT)
 
 for folder_name in folder_names:
-    local_directory = Path(settings.MEDIA_ROOT) / folder_name
-    local_directory.mkdir(parents=True, exist_ok=True)
     for result in paginator.paginate(Bucket=bucket_name, Prefix=folder_name):
             for obj in result['Contents']:
                 key = obj['Key']
                 if key.endswith('/'):
                     continue
-                if not os.path.exists(os.path.dirname(str(local_directory) + key)):
-                    os.makedirs(os.path.dirname(str(local_directory) + key))
-                s3.download_file(bucket_name, key, str(local_directory) + key)
+                if not os.path.exists(os.path.dirname(str(local_directory) + "/" + key)):
+                    os.makedirs(os.path.dirname(str(local_directory) + "/" + key))
+                s3.download_file(bucket_name, key, str(local_directory) + "/" + key)
