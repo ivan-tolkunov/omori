@@ -12,8 +12,13 @@ from .models import Image
 from django.views.decorators.cache import never_cache
 from omori import settings
 import boto3
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 s3_client = boto3.client('s3')
+boto3.set_stream_logger('', logging.INFO)
 bucket_name = "omori-photos"
 
 @never_cache
@@ -34,6 +39,7 @@ def index(request):
 
 @never_cache
 def upload_img(request):
+    logger.log(logging.INFO, "upload_img")
     try:
         file = request.FILES.get("image")
         if not file:
@@ -55,10 +61,10 @@ def upload_img(request):
         s3_client.upload_file(file_name, bucket_name, f"{receiver}/{timestamp + file_extension}")
         messages.add_message(request, messages.INFO, "Upload successful")
     except ValueError as e:
-        print(e)
+        logger.exception(e)
         messages.add_message(request, messages.ERROR, str(e))
     except Exception as e:
-        print(e)
+        logger.exception(e)
         messages.add_message(request, messages.ERROR, "Upload failed:" + str(e))
     
     base_url = reverse("index")
@@ -85,7 +91,7 @@ def add_reaction(request):
         new_reaction.save()
         messages.add_message(request, messages.INFO, "Reaction added")
     except Exception as e:
-        print(e)
+        logger.exception(e)
         messages.add_message(request, messages.ERROR, "Can't add reaction: " + str(e))
 
     base_url = reverse("index")
