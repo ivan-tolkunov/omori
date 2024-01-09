@@ -1,5 +1,5 @@
 const user = "ivan"
-const url = "https://omori.tolkunov.dev/img?user=" + user
+const url = "https://omori.onrender.com/img?user=" + user
 const refreshInterval = 1
 
 const widget = await createWidget()
@@ -8,11 +8,11 @@ Script.setWidget(widget)
 Script.complete()
 
 async function createWidget() {
-    let img = await new Request("https://omori.tolkunov.dev/img/get-img?user=" + user).loadImage()
-    let notifications = await new Request("https://omori.tolkunov.dev/img/get-reactions?user=" + user).loadJSON()
+    let img = await new Request("https://omori.onrender.com/img/get-img?user=" + user).loadImage()
+    // let notifications = await new Request("https://omori.onrender.com/img/get-reactions?user=" + user).loadJSON()
     let widget = new ListWidget()
     widget.backgroundImage = img
-    await createNotification(notifications)
+    // await createNotification(notifications)
 
     let interval = 1000 * 60 * refreshInterval
     widget.refreshAfterDate = new Date(Date.now() + interval)

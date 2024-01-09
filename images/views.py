@@ -19,7 +19,6 @@ def index(request):
         return HttpResponse("User not found", status=404)
     
     folder = Path(settings.MEDIA_ROOT) / user
-    folder.mkdir(parents=True, exist_ok=True)
     files = sorted(os.listdir(folder), reverse=True)
 
     return render(request, "images/index.html", {
@@ -41,9 +40,7 @@ def upload_img(request):
         _, file_extension = os.path.splitext(file.name)
         if file_extension.lower() not in [".png", ".jpeg", ".heic", ".jpg", ".gif"]:
             raise ValueError(f"Unsupported file extension: {file_extension}")
-        folder = Path(settings.MEDIA_ROOT) / receiver
-        folder.mkdir(parents=True, exist_ok=True)
-        file_name = folder / (timestamp + file_extension)
+        file_name = Path(settings.MEDIA_ROOT) / receiver / (timestamp + file_extension)
         file_amount_pre = file_amount(receiver)
         default_storage.save(file_name, file)
         if file_amount_pre >= file_amount(receiver):
