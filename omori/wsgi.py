@@ -34,6 +34,6 @@ for folder_name in folder_names:
                 key = obj['Key']
                 if key.endswith('/'):
                     continue
-                if not os.path.exists(os.path.dirname(local_directory + key)):
-                    os.makedirs(os.path.dirname(local_directory + key))
-                s3.download_file(bucket_name, key, local_directory + key)
+                if not os.path.exists(os.path.dirname(str(local_directory) + key)):
+                    os.makedirs(os.path.dirname(str(local_directory) + key))
+                s3.download_file(bucket_name, key, str(local_directory) + key)
