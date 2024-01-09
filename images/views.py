@@ -32,7 +32,6 @@ def upload_img(request):
     try:
         file = request.FILES.get("image")
         if not file:
-            print("No file uploaded")
             raise ValueError("No file uploaded")
         user = request.POST.get("user")
         receiver = "ivan" if user == "alina" else "alina"
