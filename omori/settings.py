@@ -26,9 +26,12 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['omori.tolkunov.dev', 'localhost', 'omori-dev.tolkunov.dev']
+ALLOWED_HOSTS = ['omori.tolkunov.dev',
+                'localhost',
+                'omori-dev.tolkunov.dev',
+                'omori.onrender.com']
 
-CSRF_TRUSTED_ORIGINS = ['https://omori.tolkunov.dev', 'https://omori-dev.tolkunov.dev']
+CSRF_TRUSTED_ORIGINS = ['https://omori.tolkunov.dev', 'https://omori-dev.tolkunov.dev', 'https://omori.onrender.com']
 
 
 # Application definition
