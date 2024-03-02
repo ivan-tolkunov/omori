@@ -75,15 +75,23 @@ def upload_img(request):
 
 def get_img(request):
     user = request.GET.get("user")
-    folder = Path(settings.MEDIA_ROOT) / user
-    files = sorted(os.listdir(folder), reverse=True)
-    now = datetime.now()
-    timestamp = now.strftime(time_format)
+    receiver = "ivan" if user == "alina" else "alina"
+    dispayed_files = sorted(os.listdir(Path(settings.MEDIA_ROOT) / user), reverse=True)
     
-    if len(files) < 1 or str(timestamp).split("_")[0] != files[0].split("_")[0]:
-        image_url = static("img/love-you.gif")
-        return redirect(image_url)
-    return redirect(settings.MEDIA_URL + user + "/" + files[0])
+    check_files = sorted(os.listdir(Path(settings.MEDIA_ROOT) / receiver), reverse=True)
+    showPhoto = len(dispayed_files) > 0 and \
+        isTodayPhotoUploaded(check_files[0])
+    
+    if showPhoto:
+        return redirect(settings.MEDIA_URL + user + "/" + dispayed_files[0])
+    
+    image_url = static("img/love-you.gif")
+    return redirect(image_url)
+    
+
+def isTodayPhotoUploaded(last_file_name):
+    today = datetime.now().strftime(time_format)
+    return str(today).split("_")[0] == last_file_name.split("_")[0]
 
 @never_cache
 def add_reaction(request):
