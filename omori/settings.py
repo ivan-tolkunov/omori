@@ -123,13 +123,6 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Custom settings
-
-UPLOADCARE = {
-    'pub_key': 'your_public_key',
-    'secret': 'your_secret_key',
-}
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 

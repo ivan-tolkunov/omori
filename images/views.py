@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 s3_client = boto3.client('s3')
 boto3.set_stream_logger('', logging.INFO)
 bucket_name = "omori-photos"
+time_format = "%Y%m%d_%H_%M_%S"
 
 @never_cache
 def index(request):
@@ -47,7 +48,7 @@ def upload_img(request):
         user = request.POST.get("user")
         receiver = "ivan" if user == "alina" else "alina"
         now = datetime.now()
-        timestamp = now.strftime("%Y%m%d_%H_%M_%S")
+        timestamp = now.strftime(time_format)
         _, file_extension = os.path.splitext(file.name)
         if file_extension.lower() not in [".png", ".jpeg", ".heic", ".jpg", ".gif"]:
             raise ValueError(f"Unsupported file extension: {file_extension}")
@@ -76,7 +77,10 @@ def get_img(request):
     user = request.GET.get("user")
     folder = Path(settings.MEDIA_ROOT) / user
     files = sorted(os.listdir(folder), reverse=True)
-    if len(files) < 1:
+    now = datetime.now()
+    timestamp = now.strftime(time_format)
+    
+    if len(files) < 1 or str(timestamp).split("_")[0] != files[0].split("_")[0]:
         image_url = static("img/love-you.gif")
         return redirect(image_url)
     return redirect(settings.MEDIA_URL + user + "/" + files[0])
