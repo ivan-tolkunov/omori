@@ -9,10 +9,10 @@ Script.complete()
 
 async function createWidget() {
     let img = await new Request("https://omori.onrender.com/img/get-img?user=" + user).loadImage()
-    // let notifications = await new Request("https://omori.onrender.com/img/get-reactions?user=" + user).loadJSON()
+    let notifications = await new Request("https://omori.onrender.com/img/get-reactions?user=" + user).loadJSON()
     let widget = new ListWidget()
     widget.backgroundImage = img
-    // await createNotification(notifications)
+    await createNotification(notifications)
 
     let interval = 1000 * 60 * refreshInterval
     widget.refreshAfterDate = new Date(Date.now() + interval)
@@ -26,6 +26,7 @@ async function createNotification(notifications) {
         "poop": "💩",
         "stone": "🗿",
         "lol": "😂",
+        "new_photo": "New photo uploaded!",
     }
     for (let notification of notifications) {
         let n = new Notification()

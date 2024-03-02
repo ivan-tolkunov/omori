@@ -61,25 +61,23 @@ def upload_img(request):
             raise ValueError("Upload failed")
         s3_client.upload_file(file_name, bucket_name, f"{receiver}/{timestamp + file_extension}")
         messages.add_message(request, messages.INFO, "Upload successful")
+        add_reaction(request)
     except ValueError as e:
         logger.exception(e)
         messages.add_message(request, messages.ERROR, str(e))
     except Exception as e:
         logger.exception(e)
         messages.add_message(request, messages.ERROR, "Upload failed:" + str(e))
-    
-    base_url = reverse("index")
-    query_string = urlencode({"user": user})
-    url = "{}?{}".format(base_url, query_string)
-    return redirect(url)
+
+    return user_redirect(user)
 
 def get_img(request):
     user = request.GET.get("user")
     receiver = "ivan" if user == "alina" else "alina"
     dispayed_files = sorted(os.listdir(Path(settings.MEDIA_ROOT) / user), reverse=True)
-    
+
     check_files = sorted(os.listdir(Path(settings.MEDIA_ROOT) / receiver), reverse=True)
-    showPhoto = len(dispayed_files) > 0 and \
+    showPhoto = file_amount(user) > 0 and \
         isTodayPhotoUploaded(check_files[0])
     
     if showPhoto:
@@ -89,9 +87,6 @@ def get_img(request):
     return redirect(image_url)
     
 
-def isTodayPhotoUploaded(last_file_name):
-    today = datetime.now().strftime(time_format)
-    return str(today).split("_")[0] == last_file_name.split("_")[0]
 
 @never_cache
 def add_reaction(request):
@@ -101,17 +96,18 @@ def add_reaction(request):
         receiver = "ivan" if user == "alina" else "alina"
         new_reaction = Image(emodji=reaction, receiver=receiver)
         new_reaction.save()
-        messages.add_message(request, messages.INFO, "Reaction added")
+        messages.add_message(request, messages.INFO, "Notification sent successfully")
     except Exception as e:
         logger.exception(e)
-        messages.add_message(request, messages.ERROR, "Can't add reaction: " + str(e))
+        messages.add_message(request, messages.ERROR, "Can't sent notification: " + str(e))
+    return user_redirect(user)
 
+def user_redirect(user):
     base_url = reverse("index")
     query_string = urlencode({"user": user})
     url = "{}?{}".format(base_url, query_string)
     return redirect(url)
     
-
 def get_reactions(request):
     user = request.GET.get("user")
     if not user:
@@ -125,5 +121,9 @@ def get_reactions(request):
     
     return JsonResponse(response_body, safe=False)
     
+def isTodayPhotoUploaded(last_file_name):
+    today = datetime.now().strftime(time_format)
+    return str(today).split("_")[0] == last_file_name.split("_")[0]
+
 def file_amount(user):
     return len(os.listdir( Path(settings.MEDIA_ROOT) / user))
