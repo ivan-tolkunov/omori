@@ -14,7 +14,7 @@
 
     {% if messages %}
         {% for message in messages %}
-            <div class="toast bg-dark text-white position-fixed" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+            <div class="toast bg-dark text-white position-fixed" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
                 <div class="toast-header">
                     <strong class="mr-auto {% if message.level == 20 %} done">  Done ✅ {% elif message.level == 40 %} error" > Looks not so good 🗿 {% endif %}</strong>
                     <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
